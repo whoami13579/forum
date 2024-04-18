@@ -1,1 +1,1 @@
-python version python10
+python version python3.10
