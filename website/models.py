@@ -30,3 +30,12 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return str(id) + " " + self.user_name
+
+'''
+使用者 pk: user_id, email, password, school, age, fk:role_id
+討論區 pk: 討論區id, name
+身分 pk: role_id, role_name
+post pk: post_id, fk: user, tag, content, title, likes, date, fk: 討論區id
+使用者-討論區: fk: user_d, fk: 討論區id
+comment: pk: comment_id, text, fk: post_id, fk: user_id
+'''
