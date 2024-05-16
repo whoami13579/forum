@@ -17,8 +17,10 @@ def create_app():
         db.create_all()
 
     from .views import views
+    from .auth import auth
 
     app.register_blueprint(views, url_prefix="/")
+    app.register_blueprint(auth, url_prefix="/")
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

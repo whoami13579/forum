@@ -49,6 +49,9 @@ class User(db.Model, UserMixin):
 
     role_id = db.Column(db.ForeignKey("roles.role_id"))
 
+    def get_id(self):
+        return self.user_id
+
     def __repr__(self):
         return f"id: {self.user_id}, email: {self.email}, name: {self.name}, school: {self.school}, birthday: {self.birthday}, role: {self.role_id}"
 
