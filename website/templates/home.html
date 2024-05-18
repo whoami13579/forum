@@ -2,7 +2,27 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div align="center">
-    <h1>Home Page test</h1>
+    <h1>Home Page</h1>
+    <br>
+    <br>
+    {% for forum in forums %}
+        <div class="card">
+            <div class="card-header">
+            {{ forum.name }}
+            </div>
+            <div class="card-body">
+            <h5 class="card-title">Description</h5>
+            <p class="card-text">{{ forum.description }}</p>
+            <a href="#" class="btn btn-primary">See Forum</a>
+            </div>
+        </div>
+        <br>
+        <br>
+      {% endfor %}
+      <br>
+      <br>
+      <br>
+      <br>
     {% if user.is_authenticated %}
     {% endif %}
 </div>

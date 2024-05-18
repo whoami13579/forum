@@ -59,11 +59,13 @@ class User(db.Model, UserMixin):
 class Forum(db.Model):
     __tablename__ = "forums"
 
-    def __init__(self, name):
+    def __init__(self, name, description):
         self.name = name
+        self.description = description
 
     forum_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
+    description = db.Column(db.String(150), unique=True)
 
     users = db.relationship("User", secondary=Forum_user, backref="forums")
 
