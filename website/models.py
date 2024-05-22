@@ -98,7 +98,7 @@ class Post(db.Model):
     user_id = db.Column(db.ForeignKey("users.user_id"))
     forum_id = db.Column(db.ForeignKey("forums.forum_id"))
 
-    user = db.relationship("User", backref="posts")
+    author = db.relationship("User", backref="posts")
     forum = db.relationship("Forum", backref="posts")
 
     def __repr__(self):

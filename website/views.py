@@ -27,7 +27,7 @@ def new_post(forum_id):
         content = request.form.get("content")
 
         post = Post(title, tags, content, current_user.get_id(), forum_id)
-        post.user = current_user
+        post.author = current_user
         post.forum = Forum.query.filter_by(forum_id=forum_id).first()
 
         db.session.add(post)
