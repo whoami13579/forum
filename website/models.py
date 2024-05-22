@@ -12,6 +12,16 @@ Forum_user = db.Table(
     ),
 )
 
+Post_likes = db.Table(
+    "post_likes",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.user_id")),
+    db.Column(
+        "post_id",
+        db.Integer,
+        db.ForeignKey("posts.post_id"),
+    ),
+)
+
 
 class Role(db.Model):
     __tablename__ = "roles"
@@ -78,11 +88,10 @@ class Forum(db.Model):
 class Post(db.Model):
     __tablename__ = "posts"
 
-    def __init__(self, title, tag, content, user_id, forum_id):
+    def __init__(self, title, tags, content, user_id, forum_id):
         self.title = title
-        self.tag = tag
+        self.tags = tags
         self.content = content
-        self.likes = 0
         self.report = False
         self.user_id = user_id
         self.forum_id = forum_id
@@ -91,7 +100,6 @@ class Post(db.Model):
     title = db.Column(db.String(50))
     tags = db.Column(db.String(20))
     content = db.Column(db.String(300))
-    likes = db.Column(db.Integer)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     report = db.Column(db.Boolean)
 
@@ -100,6 +108,7 @@ class Post(db.Model):
 
     author = db.relationship("User", backref="posts")
     forum = db.relationship("Forum", backref="posts")
+    likes = db.relationship("User", secondary=Post_likes, backref="likes")
 
     def __repr__(self):
         return f"id: {self.post_id}, title: {self.title}, tag: {self.tag}, content: {self.content}, likes: {self.likes}, date: {self.date}, report: {self.report}, user_id: {self.user_id}, forum_id: {self.forum_id}"
