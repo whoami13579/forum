@@ -102,7 +102,13 @@ def delete_forum(forum_id):
     flash("You can't delete this forum.", category="error")
     return redirect(url_for("views.homne"))
 
-@views.route("/<user_id>/forums")
+@views.route("/my-forums")
 @login_required
-def my_forums(user_id):
+def my_forums():
     return render_template("my_forums.html", user=current_user, forums=current_user.forums)
+    
+
+@views.route("/forum/<forum_id>/<post_id>")
+@login_required
+def view_post(forum_id, post_id):
+    return render_template("post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
