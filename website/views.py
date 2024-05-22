@@ -112,3 +112,21 @@ def my_forums():
 @login_required
 def view_post(forum_id, post_id):
     return render_template("post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
+
+
+@views.route("/forum/<forum_id>/<post_id>/like")
+@login_required
+def like_post(forum_id, post_id):
+    post = Post.query.filter_by(post_id=post_id).first()
+    if current_user in post.likes:
+        post.likes.remove(current_user)
+        
+        db.session.commit()
+
+        return render_template("post.html", user=current_user, post=post)
+    else:
+        post.likes.append(current_user)
+
+        db.session.commit()
+
+        return render_template("post.html", user=current_user, post=post)

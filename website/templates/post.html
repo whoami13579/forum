@@ -25,12 +25,22 @@
     <h3>post time : {{post.date}}</h3>
     <br>
     <br>
+    <a>likes : {{ post.likes | length }}</a>
+    <br>
+    <br>
     <h3>Content</h3>
   </div>
 
     <div class="wrapper">
       <p class="demo-1" align="left">{{post.content}}</p>
     </div>
+    {% if user.is_authenticated %}
+      {% if user in post.likes %}
+        <a type="button" class="btn btn-primary" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/like">Like</a>
+      {% else %}
+        <a type="button" class="btn btn-outline-primary" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/like">Like</a>
+      {% endif %}
+    {% endif %}
   <br>
   <br>
 
