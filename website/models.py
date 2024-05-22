@@ -3,7 +3,7 @@ from . import db
 from sqlalchemy.sql import func
 
 Forum_user = db.Table(
-    "forum_teachers",
+    "forum_users",
     db.Column("user_id", db.Integer, db.ForeignKey("users.user_id")),
     db.Column(
         "forum_id",
@@ -59,11 +59,15 @@ class User(db.Model, UserMixin):
 class Forum(db.Model):
     __tablename__ = "forums"
 
-    def __init__(self, name):
+    def __init__(self, name, description, user_id):
         self.name = name
+        self.description = description
+        self.user_id = user_id
 
     forum_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
+    description = db.Column(db.String(150), unique=True)
+    user_id = db.Column(db.ForeignKey("users.user_id"))
 
     users = db.relationship("User", secondary=Forum_user, backref="forums")
 
@@ -74,19 +78,18 @@ class Forum(db.Model):
 class Post(db.Model):
     __tablename__ = "posts"
 
-    def __init__(self, title, tag, content, date, user_id, forum_id):
+    def __init__(self, title, tag, content, user_id, forum_id):
         self.title = title
         self.tag = tag
         self.content = content
         self.likes = 0
-        self.date = date
         self.report = False
         self.user_id = user_id
         self.forum_id = forum_id
 
     post_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50))
-    tag = db.Column(db.String(20))
+    tags = db.Column(db.String(20))
     content = db.Column(db.String(300))
     likes = db.Column(db.Integer)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
