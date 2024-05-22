@@ -3,7 +3,7 @@ from . import db
 from sqlalchemy.sql import func
 
 Forum_user = db.Table(
-    "forum_teachers",
+    "forum_users",
     db.Column("user_id", db.Integer, db.ForeignKey("users.user_id")),
     db.Column(
         "forum_id",

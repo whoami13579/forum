@@ -36,5 +36,28 @@ def new_post(forum_id):
         flash("New Post Created", category="success")
         return redirect(url_for("views.forum", forum_id=forum_id))
 
-
     return render_template("new_post.html", user=current_user)
+
+
+@views.route("/forum/<forum_id>/join")
+@login_required
+def join_forum(forum_id):
+    forum = Forum.query.filter_by(forum_id=forum_id).first()
+    forum.users.append(current_user)
+
+    db.session.commit()
+    flash("Join", category="success")
+
+    return redirect(url_for("views.forum", forum_id=forum_id))
+
+
+@views.route("/forum/<forum_id>/leave")
+@login_required
+def leave_forum(forum_id):
+    forum = Forum.query.filter_by(forum_id=forum_id).first()
+    forum.users.remove(current_user)
+
+    db.session.commit()
+    flash("Leave", category="success")
+
+    return redirect(url_for("views.forum", forum_id=forum_id))

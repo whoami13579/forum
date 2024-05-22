@@ -13,7 +13,13 @@
     <h1>{{ forum.name }}</h1>
     <br>
     <br>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user in forum.users %}
+        <a class="btn btn-primary" href="/forum/{{forum.forum_id}}/leave">Leave</a>
+    {% else %}
+        <a class="btn btn-primary" href="/forum/{{forum.forum_id}}/join">Join</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user in forum.users %}
     <a class="btn btn-primary" href="/forum/{{forum.forum_id}}/new-post">New Post</a>
     {% endif %}
     <br>
