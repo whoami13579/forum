@@ -27,7 +27,8 @@
     {% for post in forum.posts %}
         <div class="card">
             <div class="card-header">
-            {{ post.title }}
+                <div align="left">title: {{ post.title }}</div>
+                <div align="right">author: {{ post.user.name }}, time: {{ post.date }}</div>
             </div>
             <div class="card-body">
             <h5 class="card-title">Content</h5>
