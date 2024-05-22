@@ -76,19 +76,18 @@ class Forum(db.Model):
 class Post(db.Model):
     __tablename__ = "posts"
 
-    def __init__(self, title, tag, content, date, user_id, forum_id):
+    def __init__(self, title, tag, content, user_id, forum_id):
         self.title = title
         self.tag = tag
         self.content = content
         self.likes = 0
-        self.date = date
         self.report = False
         self.user_id = user_id
         self.forum_id = forum_id
 
     post_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50))
-    tag = db.Column(db.String(20))
+    tags = db.Column(db.String(20))
     content = db.Column(db.String(300))
     likes = db.Column(db.Integer)
     date = db.Column(db.DateTime(timezone=True), default=func.now())

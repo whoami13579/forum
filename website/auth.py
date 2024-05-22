@@ -15,7 +15,7 @@ def sign_up():
         school = request.form.get("school")
         birthday = request.form.get("birthday")
         date_format = "%Y-%m-%d"
-        birthday = datetime.strptime(birthday, date_format)
+        birthday = datetime.strptime(birthday, date_format).date()
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
 
