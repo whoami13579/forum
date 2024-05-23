@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
-from .models import Role, User, Forum, Post
+from .models import Role, User, Forum, Post, Report
 from . import db
 from datetime import datetime
 
@@ -27,7 +27,7 @@ def new_post(forum_id):
         content = request.form.get("content")
 
         post = Post(title, tags, content, current_user.get_id(), forum_id)
-        post.user = current_user
+        post.author = current_user
         post.forum = Forum.query.filter_by(forum_id=forum_id).first()
 
         db.session.add(post)
@@ -101,3 +101,122 @@ def delete_forum(forum_id):
 
     flash("You can't delete this forum.", category="error")
     return redirect(url_for("views.homne"))
+
+@views.route("/my-forums")
+@login_required
+def my_forums():
+    return render_template("my_forums.html", user=current_user, forums=current_user.forums)
+    
+
+@views.route("/forum/<forum_id>/<post_id>")
+@login_required
+def view_post(forum_id, post_id):
+    return render_template("post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
+
+
+@views.route("/forum/<forum_id>/<post_id>/like")
+@login_required
+def like_post(forum_id, post_id):
+    post = Post.query.filter_by(post_id=post_id).first()
+    if current_user in post.likes:
+        post.likes.remove(current_user)
+        
+        db.session.commit()
+
+        return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
+    else:
+        post.likes.append(current_user)
+
+        db.session.commit()
+
+        return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
+
+
+@views.route("/forum/<forum_id>/<post_id>/report", methods=["GET", "POST"])
+@login_required
+def report_post(forum_id, post_id):
+    post = Post.query.filter_by(post_id=post_id).first()
+    
+    if Report.query.filter_by(user_id=current_user.get_id()).first():
+        flash("You have already reported this post.", category="error")
+
+        return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
+
+    if request.method == "POST":
+        if Report.query.filter_by(user_id=current_user.get_id()).first():
+            flash("You have already reported this post.", category="error")
+
+            return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
+
+        reason = request.form.get("reason")
+
+        post.report = True
+        
+        report = Report(reason, current_user.get_id(), post_id)
+        report.post = Post.query.filter_by(post_id=post_id).first()
+
+        db.session.add(report)
+        db.session.commit()
+
+        flash("Report created.", category="success")
+
+        return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
+
+
+    return render_template("report.html", user=current_user)
+
+
+@views.route("/reported-posts")
+@login_required
+def reported_forums():
+    if current_user.role_id != 2:
+        flash("You don't have access to this page.", category="error")
+        
+        return redirect(url_for("views.home", user=current_user))
+
+    return render_template("reported_posts.html", user=current_user, posts=Post.query.filter_by(report=True))
+
+
+@views.route("/reported-posts/<post_id>")
+@login_required
+def view_reported_post(post_id):
+    if current_user.role_id != 2:
+        flash("You don't have access to this page.", category="error")
+        
+        return redirect(url_for("views.home", user=current_user))
+
+    return render_template("reported_post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
+
+
+@views.route("/reported-posts/<post_id>/ok")
+@login_required
+def view_post_ok(post_id):
+    if current_user.role_id != 2:
+        flash("You don't have access to this page.", category="error")
+        
+        return redirect(url_for("views.home", user=current_user))
+
+    post = Post.query.filter_by(post_id=post_id).first()
+    post.report = False
+
+    db.session.query(Report).filter_by(post_id=post_id).delete()
+    db.session.commit()
+
+    return redirect(url_for("views.reported_forums", user=current_user))
+
+
+@views.route("/reported-posts/<post_id>/delete")
+@login_required
+def view_post_delete(post_id):
+    if current_user.role_id != 2:
+        flash("You don't have access to this page.", category="error")
+        
+        return redirect(url_for("views.home", user=current_user))
+    
+    db.session.query(Report).filter_by(post_id=post_id).delete()
+    post = Post.query.filter_by(post_id=post_id).first()
+    
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(url_for("views.reported_forums", user=current_user))
