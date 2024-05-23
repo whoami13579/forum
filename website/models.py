@@ -117,6 +117,11 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = "comments"
 
+    def __init__(self, text, user_id, post_id):
+        self.text = text
+        self.user_id = user_id
+        self.post_id = post_id
+
     comment_id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(50))
 
@@ -125,3 +130,23 @@ class Comment(db.Model):
 
     user = db.relationship("User", backref="comments")
     post = db.relationship("Post", backref="comments")
+
+
+class Report(db.Model):
+    __tablename__ = "reports"
+
+    def __init__(self, reason, user_id, post_id):
+        self.reason = reason
+        self.user_id = user_id
+        self.post_id = post_id
+    
+    report_id = db.Column(db.Integer, primary_key=True)
+    reason = db.Column(db.String(50))
+
+    user_id = db.Column(db.ForeignKey("users.user_id"))
+    post_id = db.Column(db.ForeignKey("posts.post_id"))
+
+    post = db.relationship("Post", backref="reports")
+
+    def __repr__(self):
+        return f"id: {self.report_id}, reason: {self.reason}, post_id: {self.post_id}"

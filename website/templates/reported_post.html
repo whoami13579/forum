@@ -34,17 +34,18 @@
     <div class="wrapper">
       <p class="demo-1" align="left">{{post.content}}</p>
     </div>
-    {% if user.is_authenticated %}
-      {% if user in post.likes %}
-        <a class="btn btn-primary" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/like">Like</a>
-      {% else %}
-        <a class="btn btn-outline-primary" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/like">Like</a>
-      {% endif %}
-    {% endif %}
-  <br>
-  <br>
-  {% if user.is_authenticated %}
-    <a class="btn btn-danger" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/report">Report</a>
+
+    <br>
+    <br>
+    {% for report in post.reports %}
+        <a>reason: {{report.reason}}</a>
+        <br>
+    {% endfor %}
+    <br>
+    <br>
+  {% if user.is_authenticated and user.role_id == 2 %}
+    <a class="btn btn-primary" href="/reported-posts/{{post.post_id}}/ok">Ok</a>
+    <a class="btn btn-danger" href="/reported-posts/{{post.post_id}}/delete">Delete</a>
   {% endif %}
   <br>
   <br>
