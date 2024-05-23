@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
-from .models import Role, User, Forum, Post, Report
+from .models import Role, User, Forum, Post, Report, Comment
 from . import db
 from datetime import datetime
 
@@ -108,9 +108,19 @@ def my_forums():
     return render_template("my_forums.html", user=current_user, forums=current_user.forums)
     
 
-@views.route("/forum/<forum_id>/<post_id>")
+@views.route("/forum/<forum_id>/<post_id>", methods=["GET", "POST"])
 @login_required
 def view_post(forum_id, post_id):
+    if request.method == "POST":
+        text = request.form.get("text")
+
+        comment = Comment(text, current_user.get_id(), post_id)
+        comment.user = current_user
+        comment.post = Post.query.filter_by(post_id=post_id).first()
+
+        db.session.add(comment)
+        db.session.commit()
+
     return render_template("post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
 
 
