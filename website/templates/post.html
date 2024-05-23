@@ -50,6 +50,26 @@
   <br>
 
   {% if user.is_authenticated %}
+    <form method="POST">
+          <div class="mb-3">
+            <label for="text" class="form-label">Comment</label>
+            <input type="text" id="text" name="text" class="form-control" placeholder="Enter Your Comment" required>
+          </div>
+          <button type="submit" class="btn btn-primary">comment</button>
+      </form>
+  {% endif %}
+
+  <h3>Comments</h3>
+  {% for comment in post.comments %}
+    <a>author: {{comment.user.name}}</a>
+    <br>
+    <a>{{comment.text}}</a>
+    <br>
+    <br>
+    <br>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
   {% endif %}
 </div>
 {% endblock %}
