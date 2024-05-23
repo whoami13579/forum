@@ -196,10 +196,10 @@ def view_post_ok(post_id):
         
         return redirect(url_for("views.home", user=current_user))
 
-    post = Post.query.filter_by(post_id=post_id)
+    post = Post.query.filter_by(post_id=post_id).first()
     post.report = False
 
-    db.session.query(Report).filter(Report.post_id==post_id).delete()
+    db.session.query(Report).filter_by(post_id=post_id).delete()
     db.session.commit()
 
     return redirect(url_for("views.reported_forums", user=current_user))
@@ -213,6 +213,7 @@ def view_post_delete(post_id):
         
         return redirect(url_for("views.home", user=current_user))
     
+    db.session.query(Report).filter_by(post_id=post_id).delete()
     post = Post.query.filter_by(post_id=post_id).first()
     
     db.session.delete(post)
