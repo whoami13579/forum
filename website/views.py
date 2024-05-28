@@ -230,3 +230,16 @@ def view_post_delete(post_id):
     db.session.commit()
 
     return redirect(url_for("views.reported_forums", user=current_user))
+
+
+@views.route("/search", methods=["GET", "POST"])
+def search():
+    forums = []
+    posts = []
+
+    if request.method == "POST":
+        search = request.form.get("search")
+        forums = Forum.query.filter(Forum.name.like('%' + search + '%'))
+        posts = Post.query.filter(Post.title.like('%' + search + '%'))
+
+    return render_template("search.html", user=current_user, forums=forums, posts=posts)
