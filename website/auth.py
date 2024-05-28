@@ -30,7 +30,8 @@ def sign_up():
         else:
             role = Role.query.filter_by(role_id=1).first()
             user = User(email, name, generate_password_hash(password1), school, birthday, 1)
-            role.users.append(user)
+            if role is not None:
+                role.users.append(user)
             db.session.add(user)
             db.session.commit()
 
