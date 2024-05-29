@@ -16,6 +16,13 @@ def home():
         return render_template("home_ja.html", user=current_user, forums=forums)
     return render_template("home.html", user=current_user, forums=forums)
 
+@views.route("/forum/<forum_id>")
+def forum(forum_id):
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("forum_ja.html", user=current_user, forum=Forum.query.filter_by(forum_id=forum_id).first())
+    return render_template("forum.html", user=current_user, forum=Forum.query.filter_by(forum_id=forum_id).first())
+
 @views.route("/switch-language", methods=["POST"])
 def switch_language():
     language = request.form['language']
@@ -275,53 +282,53 @@ def search():
         return render_template("search_ja.html", user=current_user, forums=forums, posts=posts)
     return render_template("search.html", user=current_user, forums=forums, posts=posts)
 
-@views.route("/sign-up", methods=["GET", "POST"])
-def sign_up():
-    if request.method == "POST":
-        email = request.form.get("email")
-        name = request.form.get("name")
-        password1 = request.form.get("password1")
-        password2 = request.form.get("password2")
+# @views.route("/sign-up", methods=["GET", "POST"])
+# def sign_up():
+#     if request.method == "POST":
+#         email = request.form.get("email")
+#         name = request.form.get("name")
+#         password1 = request.form.get("password1")
+#         password2 = request.form.get("password2")
 
-        if password1 != password2:
-            flash("Passwords do not match.", category="error")
-        elif User.query.filter_by(email=email).first():
-            flash("Email already registered.", category="error")
-        else:
-            new_user = User(email=email, name=name, password=password1)
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user)
-            flash("Account created successfully.", category="success")
-            return redirect(url_for("views.home"))
+#         if password1 != password2:
+#             flash("Passwords do not match.", category="error")
+#         elif User.query.filter_by(email=email).first():
+#             flash("Email already registered.", category="error")
+#         else:
+#             new_user = User(email=email, name=name, password=password1)
+#             db.session.add(new_user)
+#             db.session.commit()
+#             login_user(new_user)
+#             flash("Account created successfully.", category="success")
+#             return redirect(url_for("views.home"))
 
-    language = session.get('language', 'en')
-    if language == 'ja':
-        return render_template("signup_ja.html", user=current_user)
-    return render_template("signup.html", user=current_user)
+#     language = session.get('language', 'en')
+#     if language == 'ja':
+#         return render_template("signup_ja.html", user=current_user)
+#     return render_template("signup.html", user=current_user)
 
 
-@views.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        user = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            login_user(user)
-            flash("Logged in successfully.", category="success")
-            return redirect(url_for("views.home"))
-        else:
-            flash("Login failed. Check your email and password.", category="error")
+# @views.route("/login", methods=["GET", "POST"])
+# def login():
+#     if request.method == "POST":
+#         email = request.form.get("email")
+#         password = request.form.get("password")
+#         user = User.query.filter_by(email=email).first()
+#         if user and user.check_password(password):
+#             login_user(user)
+#             flash("Logged in successfully.", category="success")
+#             return redirect(url_for("views.home"))
+#         else:
+#             flash("Login failed. Check your email and password.", category="error")
 
-    language = session.get('language', 'en')
-    if language == 'ja':
-        return render_template("login_ja.html", user=current_user)
-    return render_template("login.html", user=current_user)
+#     language = session.get('language', 'en')
+#     if language == 'ja':
+#         return render_template("login_ja.html", user=current_user)
+#     return render_template("login.html", user=current_user)
 
-@views.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    flash("Logged out successfully.", category="success")
-    return redirect(url_for("views.home"))
+# @views.route("/logout")
+# @login_required
+# def logout():
+#     logout_user()
+#     flash("Logged out successfully.", category="success")
+#     return redirect(url_for("views.home"))

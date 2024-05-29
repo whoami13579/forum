@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from flask_login import current_user, login_user, login_required, logout_user
 from .models import User, Role
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,6 +39,9 @@ def sign_up():
             flash("Teacher created.", category="success")
             return redirect(url_for("views.home"))
 
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("signup_ja.html", user=current_user)
 
 
     return render_template("signup.html", user=current_user)
@@ -68,5 +71,10 @@ def login():
 
         else:
             flash("User does not exist.", category="error")
+        
+
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("login_ja.html", user=current_user)
 
     return render_template("login.html", user=current_user)
