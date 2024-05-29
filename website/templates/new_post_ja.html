@@ -1,0 +1,21 @@
+{% extends "base_ja.html" %}
+{% block title %}新しい投稿{% endblock %}
+{% block content %}
+<form method="POST">
+    <h1 align="left">新しい投稿</h1>
+      <div class="mb-3">
+        <label for="title" class="form-label">タイトル</label>
+        <input type="text" id="title" name="title" class="form-control" placeholder="タイトルを入力してください" required>
+      </div>
+      <div class="mb-3">
+        <label for="tags" class="form-label">タグ</label>
+        <input type="text" id="tags" name="tags" class="form-control" placeholder="タグを入力してください">
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label">内容</label>
+        <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">投稿</button>
+  </form>
+  <br>
+{% endblock %}

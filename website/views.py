@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from flask_login import current_user, login_required
 from .models import Role, User, Forum, Post, Report, Comment
 from . import db
@@ -10,12 +10,17 @@ views = Blueprint("views", __name__)
 @views.route("/")
 @views.route("/home")
 def home():
-    return render_template("home.html", user=current_user, forums=Forum.query.filter_by().all())
+    forums = Forum.query.all()
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("home_ja.html", user=current_user, forums=forums)
+    return render_template("home.html", user=current_user, forums=forums)
 
-
-@views.route("/forum/<forum_id>")
-def forum(forum_id):
-    return render_template("forum.html", user=current_user, forum=Forum.query.filter_by(forum_id=forum_id).first())
+@views.route("/switch-language", methods=["POST"])
+def switch_language():
+    language = request.form['language']
+    session['language'] = language
+    return redirect(request.referrer or url_for('views.home'))
 
 
 @views.route("/forum/<forum_id>/new-post", methods=["GET", "POST"])
@@ -36,6 +41,9 @@ def new_post(forum_id):
         flash("New Post Created", category="success")
         return redirect(url_for("views.forum", forum_id=forum_id))
 
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("new_post_ja.html", user=current_user)
     return render_template("new_post.html", user=current_user)
 
 
@@ -83,6 +91,9 @@ def new_forum():
         flash("New Forum Created", category="success")
         return redirect(url_for("views.home"))
 
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("new_forum_ja.html", user=current_user)
     return render_template("new_forum.html", user=current_user)
 
 
@@ -105,7 +116,11 @@ def delete_forum(forum_id):
 @views.route("/my-forums")
 @login_required
 def my_forums():
-    return render_template("my_forums.html", user=current_user, forums=current_user.forums)
+    forums = current_user.forums
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("my_forums_ja.html", user=current_user, forums=forums)
+    return render_template("my_forums.html", user=current_user, forums=forums)
     
 
 @views.route("/forum/<forum_id>/<post_id>", methods=["GET", "POST"])
@@ -121,7 +136,11 @@ def view_post(forum_id, post_id):
         db.session.add(comment)
         db.session.commit()
 
-    return render_template("post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
+    post = Post.query.filter_by(post_id=post_id).first()
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("post_ja.html", user=current_user, post=post)
+    return render_template("post.html", user=current_user, post=post)
 
 
 @views.route("/forum/<forum_id>/<post_id>/like")
@@ -172,7 +191,9 @@ def report_post(forum_id, post_id):
 
         return redirect(url_for("views.view_post", forum_id=forum_id, post_id=post_id))
 
-
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("report_ja.html", user=current_user)
     return render_template("report.html", user=current_user)
 
 
@@ -184,6 +205,9 @@ def reported_forums():
         
         return redirect(url_for("views.home", user=current_user))
 
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("reported_posts_ja.html", user=current_user, posts=Post.query.filter_by(report=True))
     return render_template("reported_posts.html", user=current_user, posts=Post.query.filter_by(report=True))
 
 
@@ -195,7 +219,11 @@ def view_reported_post(post_id):
         
         return redirect(url_for("views.home", user=current_user))
 
-    return render_template("reported_post.html", user=current_user, post=Post.query.filter_by(post_id=post_id).first())
+    post = Post.query.filter_by(post_id=post_id).first()
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("reported_post_ja.html", user=current_user, post=post)
+    return render_template("reported_post.html", user=current_user, post=post)
 
 
 @views.route("/reported-posts/<post_id>/ok")
@@ -242,4 +270,58 @@ def search():
         forums = Forum.query.filter(Forum.name.like('%' + search + '%'))
         posts = Post.query.filter(Post.title.like('%' + search + '%'))
 
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("search_ja.html", user=current_user, forums=forums, posts=posts)
     return render_template("search.html", user=current_user, forums=forums, posts=posts)
+
+@views.route("/sign-up", methods=["GET", "POST"])
+def sign_up():
+    if request.method == "POST":
+        email = request.form.get("email")
+        name = request.form.get("name")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+
+        if password1 != password2:
+            flash("Passwords do not match.", category="error")
+        elif User.query.filter_by(email=email).first():
+            flash("Email already registered.", category="error")
+        else:
+            new_user = User(email=email, name=name, password=password1)
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+            flash("Account created successfully.", category="success")
+            return redirect(url_for("views.home"))
+
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("signup_ja.html", user=current_user)
+    return render_template("signup.html", user=current_user)
+
+
+@views.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            login_user(user)
+            flash("Logged in successfully.", category="success")
+            return redirect(url_for("views.home"))
+        else:
+            flash("Login failed. Check your email and password.", category="error")
+
+    language = session.get('language', 'en')
+    if language == 'ja':
+        return render_template("login_ja.html", user=current_user)
+    return render_template("login.html", user=current_user)
+
+@views.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out successfully.", category="success")
+    return redirect(url_for("views.home"))

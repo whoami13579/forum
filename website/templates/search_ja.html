@@ -1,0 +1,64 @@
+{% extends "base_ja.html" %}
+{% block title %}検索{% endblock %}
+{% block content %}
+<style>
+    .brief {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    }
+</style>
+<div align="center">
+    <h1>検索</h1>
+    <br>
+    <br>
+
+<form method="POST">
+      <div class="mb-3">
+        <input type="text" id="search" name="search" class="form-control" placeholder="検索" required>
+      </div>
+      <button type="submit" class="btn btn-primary">検索</button>
+  </form>
+
+    <br>
+    <br>
+    {% for forum in forums %}
+        <div class="card">
+            <div class="card-header">
+            {{ forum.name }}
+            </div>
+            <div class="card-body">
+            <h5 class="card-title">説明</h5>
+            <p class="card-text brief">{{ forum.description }}</p>
+            <a href="/forum/{{ forum.forum_id }}" class="btn btn-primary">フォーラムを見る</a>
+            </div>
+        </div>
+        <br>
+        <br>
+    {% endfor %}
+
+    {% for post in posts %}
+        <div class="card">
+            <div class="card-header">
+                <div align="left">タイトル: {{ post.title }}</div>
+                <div align="right">作成者: {{ post.author.name }}, 時間: {{ post.date }}</div>
+            </div>
+            <div class="card-body">
+            <h5 class="card-title">内容</h5>
+            <p class="card-text brief">{{ post.tags }}</p>
+            <p class="card-text brief">{{ post.content }}</p>
+            <a href="/forum/{{post.forum.forum_id}}/{{post.post_id}}" class="btn btn-primary">投稿を見る</a>
+            </div>
+        </div>
+        <br>
+        <br>
+      {% endfor %}
+      <br>
+      <br>
+      <br>
+      <br>
+    {% if user.is_authenticated %}
+    {% endif %}
+</div>
+{% endblock %}

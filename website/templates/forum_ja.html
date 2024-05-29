@@ -1,0 +1,55 @@
+{% extends "base_ja.html" %}
+{% block title %}{{ forum.name }}{% endblock %}
+{% block content %}
+<style>
+    .brief {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    }
+</style>
+<div align="center">
+    <h1>{{ forum.name }}</h1>
+    <br>
+    <br>
+
+    {% if user.user_id == forum.user_id %}
+        <a class="btn btn-danger" href="/forum/{{forum.forum_id}}/delete">フォーラムを削除</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user in forum.users %}
+        <a class="btn btn-danger" href="/forum/{{forum.forum_id}}/leave">離れる</a>
+    {% else %}
+        <a class="btn btn-primary" href="/forum/{{forum.forum_id}}/join">参加する</a>
+    {% endif %}
+
+    {% if user.is_authenticated and user in forum.users %}
+    <a class="btn btn-primary" href="/forum/{{forum.forum_id}}/new-post">新しい投稿</a>
+    {% endif %}
+    <br>
+    <br>
+    {% for post in forum.posts %}
+        <div class="card">
+            <div class="card-header">
+                <div align="left">タイトル: {{ post.title }}</div>
+                <div align="right">作成者: {{ post.author.name }}, 時間: {{ post.date }}</div>
+            </div>
+            <div class="card-body">
+            <h5 class="card-title">内容</h5>
+            <p class="card-text brief">{{ post.tags }}</p>
+            <p class="card-text brief">{{ post.content }}</p>
+            <a href="/forum/{{forum.forum_id}}/{{post.post_id}}" class="btn btn-primary">投稿を見る</a>
+            </div>
+        </div>
+        <br>
+        <br>
+      {% endfor %}
+      <br>
+      <br>
+      <br>
+      <br>
+    {% if user.is_authenticated %}
+    {% endif %}
+</div>
+{% endblock %}
