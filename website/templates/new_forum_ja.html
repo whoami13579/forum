@@ -2,16 +2,16 @@
 {% block title %}New Post{% endblock %}
 {% block content %}
 <form method="POST">
-    <h1 align="left">New Forum</h1>
+    <h1 align="left">新しいフォーラム</h1>
       <div class="mb-3">
-        <label for="name" class="form-label">Name of the Forum</label>
-        <input type="text" id="name" name="name" class="form-control" placeholder="Enter the Name of the Forum" required>
+        <label for="name" class="form-label">フォーラム名</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="フォーラム名を記入してください" required>
       </div>
       <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
+        <label for="description" class="form-label">内容</label>
         <textarea class="form-control" id="description" name="description" rows="10" required></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">ADD</button>
+      <button type="submit" class="btn btn-primary">追加</button>
   </form>
   <br>
 {% endblock %}

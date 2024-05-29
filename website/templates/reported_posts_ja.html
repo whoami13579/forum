@@ -10,21 +10,21 @@
     }
 </style>
 <div align="center">
-    <h1>Reported Posts</h1>
+    <h1>リポート</h1>
     <br>
     <br>
 
     {% for post in posts %}
         <div class="card">
             <div class="card-header">
-                <div align="left">title: {{ post.title }}</div>
-                <div align="right">author: {{ post.author.name }}, time: {{ post.date }}</div>
+                <div align="left">タイトル: {{ post.title }}</div>
+                <div align="right">ユーザー: {{ post.author.name }}, 投稿時間: {{ post.date }}</div>
             </div>
             <div class="card-body">
-            <h5 class="card-title">Content</h5>
+            <h5 class="card-title">内容</h5>
             <p class="card-text brief">{{ post.tags }}</p>
             <p class="card-text brief">{{ post.content }}</p>
-            <a href="/reported-posts/{{post.post_id}}" class="btn btn-primary">See Post</a>
+            <a href="/reported-posts/{{post.post_id}}" class="btn btn-primary">投稿内容を見る</a>
             </div>
         </div>
         <br>
