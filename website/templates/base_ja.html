@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="jp">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -118,12 +118,12 @@
             document.body.classList.toggle("light-mode");
             const isDarkMode = document.body.classList.contains("dark-mode");
             localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
-            document.getElementById("darkModeToggle").innerText = isDarkMode ? "lightMode" : "darkMode";
+            document.getElementById("darkModeToggle").innerText = isDarkMode ? "ライトモード" : "ダークモード";
         }
 
         function confirmLogout(event) {
             event.preventDefault();
-            const logoutConfirmed = confirm("Do you really want to log out?");
+            const logoutConfirmed = confirm("本当にログアウトしますか？");
             if (logoutConfirmed) {
                 window.location.href = event.target.href;
             }
@@ -134,11 +134,11 @@
             if (darkMode === "enabled") {
                 document.body.classList.add("dark-mode");
                 document.body.classList.remove("light-mode");
-                document.getElementById("darkModeToggle").innerText = "lightMode";
+                document.getElementById("darkModeToggle").innerText = "ライトモード";
             } else {
                 document.body.classList.add("light-mode");
                 document.body.classList.remove("dark-mode");
-                document.getElementById("darkModeToggle").innerText = "darkMode";
+                document.getElementById("darkModeToggle").innerText = "ダークモード";
             }
         }
     </script>
@@ -147,27 +147,27 @@
 <body>
     <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/home">Forum</a>
+      <a class="navbar-brand" href="/home">掲示板</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/home">Home</a>
+            <a class="nav-link active" aria-current="page" href="/home">ホーム</a>
           </li>
           <li>
             {% if user.is_authenticated %}
-                <a class="nav-link active" aria-current="page" href="/my-forums">My Forums</a>
+                <a class="nav-link active" aria-current="page" href="/my-forums">投稿</a>
             {% endif %}
           </li>
           <li>
             {% if user.is_authenticated and user.role_id == 2 %}
-                <a class="nav-link active" aria-current="page" href="/reported-posts">Reported Posts</a>
+                <a class="nav-link active" aria-current="page" href="/reported-posts">リポート</a>
             {% endif %}
           </li>
           <li>
-              <a class="nav-link active" aria-current="page" href="/search">Search</a>
+              <a class="nav-link active" aria-current="page" href="/search">検索</a>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -190,18 +190,18 @@
                         </form>
                       </li>
                       <li>
-                        <button id="darkModeToggle" class="dropdown-item" onclick="toggleDarkMode()">darkMode</button>
+                        <button id="darkModeToggle" class="dropdown-item" onclick="toggleDarkMode()">ダークモード</button>
                       </li>
                       <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="/logout" onclick="confirmLogout(event)">Logout</a></li>
+                      <li><a class="dropdown-item" href="/logout" onclick="confirmLogout(event)">ログアウト</a></li>
                     </ul>
                 </li>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/login">Login</a>
+                    <a class="nav-link active" aria-current="page" href="/login">ログイン</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/sign-up">Sign Up</a>
+                    <a class="nav-link active" aria-current="page" href="/sign-up">サインアップ</a>
                 </li>
             {% endif %}
         </ul>
