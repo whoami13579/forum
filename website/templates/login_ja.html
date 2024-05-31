@@ -1,0 +1,17 @@
+{% extends "base_ja.html" %}
+{% block title %}ログイン{% endblock %}
+{% block content %}
+<form method="POST">
+    <h1 align="left">ログイン</h1>
+      <div class="mb-3">
+        <label for="email" class="form-label">メールアドレス</label>
+        <input type="text" id="email" name="email" class="form-control" placeholder="メールアドレスを入力してください" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">パスワード</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="パスワードを入力してください" required>
+      </div>
+      <button type="submit" class="btn btn-primary">ログイン</button>
+  </form>
+  <br>
+{% endblock %}

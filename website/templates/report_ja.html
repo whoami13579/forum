@@ -1,0 +1,13 @@
+{% extends "base_ja.html" %}
+{% block title %}報告{% endblock %}
+{% block content %}
+<form method="POST">
+    <h1 align="left">報告</h1>
+      <div class="mb-3">
+        <label for="reason" class="form-label">理由</label>
+        <input type="text" id="reason" name="reason" class="form-control" placeholder="理由を入力してください" required>
+      </div>
+      <button type="submit" class="btn btn-primary">報告</button>
+  </form>
+  <br>
+{% endblock %}
