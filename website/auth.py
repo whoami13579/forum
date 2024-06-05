@@ -36,7 +36,7 @@ def sign_up():
             db.session.commit()
 
             login_user(user, remember=True)
-            flash("Teacher created.", category="success")
+            flash("User created.", category="success")
             return redirect(url_for("views.home"))
 
     language = session.get('language', 'en')
