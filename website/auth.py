@@ -59,12 +59,12 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        teacher = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-        if teacher:
-            if check_password_hash(teacher.password, password):
+        if user:
+            if check_password_hash(user.password, password):
                 flash("Logged in.", category="success")
-                login_user(teacher, remember=True)
+                login_user(user, remember=True)
                 return redirect(url_for("views.home"))
             else:
                 flash("Password incorrect.", category="error")
