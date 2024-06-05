@@ -17,6 +17,17 @@
 </style>
 
 <div align="center">
+
+  <div align="left">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/forum/{{ post.forum.forum_id }}">{{ post.forum.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+      </ol>
+    </nav>
+  </div>
+
   <h1>title : {{post.title}}</h1>
   <a>{{ post.tags }}</a>
 
@@ -45,6 +56,11 @@
   <br>
   {% if user.is_authenticated %}
     <a class="btn btn-danger" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/report">Report</a>
+  {% endif %}
+  <br>
+  <br>
+  {% if user.is_authenticated and user == post.author %}
+    <a class="btn btn-danger" href="/forum/{{ post.forum_id }}/{{ post.post_id }}/delete">Delete</a>
   {% endif %}
   <br>
   <br>

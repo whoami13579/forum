@@ -281,3 +281,20 @@ def search():
     if language == 'ja':
         return render_template("search_ja.html", user=current_user, forums=forums, posts=posts)
     return render_template("search.html", user=current_user, forums=forums, posts=posts)
+
+
+@views.route("/forum/<forum_id>/<post_id>/delete")
+@login_required
+def delete_post(forum_id, post_id):
+    post = Post.query.filter_by(post_id=post_id).first()
+    forum_id = post.forum_id
+    if current_user != post.author:
+        flash("You don't have access to this page.", category="error")
+        
+        return redirect(url_for("views.home", user=current_user))
+    
+    db.session.delete(post)
+    db.session.commit()
+    flash("Post deleted", category="success")
+
+    return redirect(url_for("views.forum", user=current_user, forum_id=forum_id))
